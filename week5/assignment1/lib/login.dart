@@ -35,7 +35,7 @@ class _loginState extends State<login> {
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
                     'https://cdn.discordapp.com/attachments/1046432696081068112/1046433013313048677/INFINITY-01.png'),
-                radius: 100,
+                radius: 120,
                 backgroundColor: Colors.white,
               ),
             ),
