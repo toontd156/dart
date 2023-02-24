@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/provider/count.dart';
+import 'package:myapp/provider/counter2.dart';
 import 'package:provider/provider.dart';
 
 class Counter extends StatelessWidget {
@@ -14,11 +15,24 @@ class Counter extends StatelessWidget {
       body: Center(
         child: Text('Counter = ${context.watch<Count>().count}'),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<Count>().add();
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: null,
+            onPressed: () {
+              context.read<Count>().add();
+            },
+            child: const Icon(Icons.add),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Counter2()));
+            },
+            child: const Icon(Icons.navigate_next),
+          ),
+        ],
       ),
     );
   }

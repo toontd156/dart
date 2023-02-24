@@ -9,4 +9,9 @@ class Count with ChangeNotifier {
     _count++;
     notifyListeners();
   }
+
+  void remove() {
+    _count--;
+    notifyListeners();
+  }
 }
