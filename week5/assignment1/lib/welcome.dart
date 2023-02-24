@@ -6,21 +6,23 @@ class welcome extends StatelessWidget {
   Widget build(BuildContext context) {
     var data =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome'),
+        title: const Text('WELCOME'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Welcome ${data['username']}'),
-            ElevatedButton(
-              onPressed: (() {
-                Navigator.pop(context);
-              }),
-              child: const Text('Back'),
+            Text('welocme ${data['username']}'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                child: Text('BACK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ],
         ),

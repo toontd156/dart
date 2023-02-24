@@ -25,72 +25,61 @@ class _loginState extends State<login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('LOGIN'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Center(
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://cdn.discordapp.com/attachments/1046432696081068112/1046433013313048677/INFINITY-01.png'),
-                radius: 120,
-                backgroundColor: Colors.white,
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: TextField(
                 controller: usernameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Username',
-                ),
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'username'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: TextField(
                 controller: passwordController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                ),
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'password'),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                if (checkuser(
-                    usernameController.text, passwordController.text)) {
-                  setState(() {
-                    value = 1;
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => welcome(),
-                            settings: RouteSettings(
-                              arguments: {
-                                'username': usernameController.text,
-                              },
-                            )));
-                    usernameController.clear();
-                    passwordController.clear();
-                  });
-                } else {
-                  setState(() {
-                    value = 2;
-                    usernameController.clear();
-                    passwordController.clear();
-                  });
-                }
-              },
-              child: const Text('Login'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                child: Text('LOGiN'),
+                onPressed: () {
+                  if (checkuser(
+                      usernameController.text, passwordController.text)) {
+                    setState(() {
+                      value = 1;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => welcome(),
+                              settings: RouteSettings(arguments: {
+                                'username': usernameController.text
+                              })));
+                      usernameController.clear();
+                      passwordController.clear();
+                    });
+                  } else {
+                    setState(() {
+                      value = 2;
+                      usernameController.clear();
+                      passwordController.clear();
+                    });
+                  }
+                },
+              ),
             ),
             !checkuser(usernameController.text, passwordController.text) &&
                     value == 2
-                ? const Text('Username or Password is incorrect')
-                : const Text(''),
+                ? const Text('username or password is incorrect')
+                : const Text('')
           ],
         ),
       ),
@@ -98,10 +87,9 @@ class _loginState extends State<login> {
   }
 }
 
-bool checkuser(String username, String password) {
+bool checkuser(String user, String pass) {
   for (var i = 0; i < account.length; i++) {
-    if (username == account[i]['username'] &&
-        password == account[i]['password']) {
+    if (user == account[i]['username'] && pass == account[i]['password']) {
       return true;
     }
   }
