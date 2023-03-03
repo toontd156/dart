@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
-      create: (context) => Checkaws(),
-      child: const MaterialApp(home: MainPage())));
+    create: (context) => checkaws(),
+    child: const MaterialApp(
+      home: mainpage1(),
+    ),
+  ));
 }
