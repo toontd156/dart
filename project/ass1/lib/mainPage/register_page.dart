@@ -11,6 +11,9 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _idController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _sceretCode = TextEditingController();
+  final _FirstName = TextEditingController();
+  final _LastName = TextEditingController();
   String datasql = '';
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
               child: TextFormField(
                 controller: _idController,
                 decoration: InputDecoration(
-                  labelText: 'Id',
+                  labelText: 'email',
                   prefixIcon: Icon(Icons.person),
                 ),
               ),
@@ -42,23 +45,48 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscureText: true,
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _FirstName,
+                decoration: InputDecoration(
+                    labelText: 'FirstName', prefixIcon: Icon(Icons.person)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _LastName,
+                decoration: InputDecoration(
+                    labelText: 'LastName', prefixIcon: Icon(Icons.person)),
+              ),
+            ),
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _sceretCode,
+                  decoration: InputDecoration(
+                      labelText: 'Code (Dont Have Dont Input)',
+                      prefixIcon: Icon(Icons.lock)),
+                  obscureText: true,
+                )),
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red),
               ),
               onPressed: () async {
-                if (_idController.text.isEmpty) {
-                  setState(() {
-                    datasql = 'Please enter your email';
-                  });
-                  return;
-                }
-                if (_passwordController.text.isEmpty) {
-                  setState(() {
-                    datasql = 'Please enter your password';
-                  });
-                  return;
-                }
+                // if (_idController.text.isEmpty) {
+                //   setState(() {
+                //     datasql = 'Please enter your email';
+                //   });
+                //   return;
+                // }
+                // if (_passwordController.text.isEmpty) {
+                //   setState(() {
+                //     datasql = 'Please enter your password';
+                //   });
+                //   return;
+                // }
                 try {
                   final user = await FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
@@ -66,10 +94,53 @@ class _RegisterPageState extends State<RegisterPage> {
                     password: _passwordController.text,
                   );
                   // Navigate to the home page if the registration is successful
-                  final usertoFirestore = FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(user.user!.uid)
-                      .set({'email': _idController.text, 'role': 'student'});
+                  if (_sceretCode.text.isNotEmpty) {
+                    var SCT = _sceretCode.text.toUpperCase();
+                    FirebaseFirestore.instance
+                        .collection('secretCode')
+                        .get()
+                        .then((QuerySnapshot querySnapshot) {
+                      querySnapshot.docs.forEach((doc) {
+                        if (doc['Code'] == SCT) {
+                          if (doc['use'] == true) {
+                            setState(() {
+                              datasql = 'The code is already in use.';
+                            });
+                            return;
+                          }
+                          final usertoFirestore = FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(user.user!.uid)
+                              .set({
+                            'email': _idController.text,
+                            'role': 'Teacher',
+                            'name': _FirstName.text.toUpperCase(),
+                            'lastname': _LastName.text.toUpperCase(),
+                          });
+                          FirebaseFirestore.instance
+                              .collection('secretCode')
+                              .doc(doc.id)
+                              .update({
+                            'use': true,
+                          });
+                        } else {
+                          setState(() {
+                            datasql = 'The code is incorrect.';
+                          });
+                        }
+                      });
+                    });
+                  } else {
+                    final usertoFirestore = FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user.user!.uid)
+                        .set({
+                      'email': _idController.text,
+                      'role': 'student',
+                      'name': _FirstName.text.toUpperCase(),
+                      'lastname': _LastName.text.toUpperCase(),
+                    });
+                  }
                   if (user != null) {
                     Navigator.pop(context);
                   }

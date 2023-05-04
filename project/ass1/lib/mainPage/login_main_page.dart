@@ -1,5 +1,6 @@
 import 'package:ass1/mainPage/register_page.dart';
 import 'package:ass1/techerpage/main_techer_page.dart';
+import 'package:ass1/StudentPage/main_student_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Color.fromARGB(255, 131, 9, 0),
         title: Text('MFU Login'),
       ),
       body: Column(
@@ -103,14 +104,22 @@ class _LoginPageState extends State<LoginPage> {
                           .collection('users')
                           .doc(user.user!.uid)
                           .get();
-                      if (datauser == 'student') {
-                        print('hi');
-                      } else if (datauser.data()!['role'] == 'teacher') {
+                      if (datauser.data()!['role'] == 'student') {
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    TecherPage(name: datauser.data()!['name'])),
+                                builder: (context) => mainpage(
+                                    name: datauser.data()!['name'],
+                                    role: datauser.data()!['role'])),
+                            (route) => false);
+                      } else if (datauser.data()!['role'] == 'Teacher') {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TecherPage(
+                                      name: datauser.data()!['name'],
+                                      role: datauser.data()!['role'],
+                                    )),
                             (route) => false);
                       }
                     } else {
@@ -129,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red,
+                  backgroundColor: Colors.red,
                 ),
                 child: Text('Login'),
               )),

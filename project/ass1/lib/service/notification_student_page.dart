@@ -4,27 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class Noti_Techer extends StatefulWidget {
+class Noti_Student extends StatefulWidget {
   final String name;
-  const Noti_Techer({Key? key, required this.name}) : super(key: key);
+  final String role;
+  const Noti_Student({Key? key, required this.name, required this.role})
+      : super(key: key);
 
   @override
-  State<Noti_Techer> createState() => _Noti_TecherState();
+  State<Noti_Student> createState() => _Noti_StudentState();
 }
 
-class _Noti_TecherState extends State<Noti_Techer> {
+class _Noti_StudentState extends State<Noti_Student> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notification'),
+        title: Text('Pending appove'),
         backgroundColor: Colors.red,
       ),
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('req')
-                .where('Techer', isEqualTo: widget.name)
+                .where('Student', isEqualTo: widget.name)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -33,6 +35,7 @@ class _Noti_TecherState extends State<Noti_Techer> {
                     final timestamp = req['Time'] as Timestamp;
                     final time = timestamp.toDate();
                     final formattedTime = DateFormat('HH:mm').format(time);
+                    final formattedDate = DateFormat('dd/MM/yyyy').format(time);
                     return Card(
                       child: Column(
                         children: [
@@ -41,7 +44,7 @@ class _Noti_TecherState extends State<Noti_Techer> {
                               width: 422,
                               height: 100,
                               decoration: BoxDecoration(
-                                color: Colors.red,
+                                color: Color.fromARGB(255, 131, 9, 0),
                                 borderRadius: BorderRadius.circular(10),
                                 boxShadow: [
                                   BoxShadow(
@@ -56,7 +59,7 @@ class _Noti_TecherState extends State<Noti_Techer> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
-                                    '${req['Student']}',
+                                    '${req['Teacher']}',
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: Colors.white,
@@ -75,54 +78,6 @@ class _Noti_TecherState extends State<Noti_Techer> {
                                             color: Colors.white,
                                           )
                                         : Container(),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      // FirebaseFirestore.instance
-                                      //     .collection('req')
-                                      //     .doc(req.id)
-                                      //     .update({'Status': 'accept'});
-
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Ap_RJ(
-                                                    idsql: req.id,
-                                                    tyepActivecheck: 'accept',
-                                                  )));
-                                      // Ap_RJ(idsql: req.id);
-                                    },
-                                    child: Container(
-                                      width: 20,
-                                      height: 20,
-                                      child: Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      // FirebaseFirestore.instance
-                                      //     .collection('req')
-                                      //     .doc(req.id)
-                                      //     .update({'Status': 'reject'});
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Ap_RJ(
-                                                    idsql: req.id,
-                                                    tyepActivecheck: 'reject',
-                                                  )));
-                                    },
-                                    child: Container(
-                                      width: 20,
-                                      height: 20,
-                                      child: Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                      ),
-                                    ),
                                   ),
                                 ],
                               ),

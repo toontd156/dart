@@ -1,3 +1,4 @@
+import 'package:ass1/service/History_page_from_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -5,7 +6,8 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:intl/intl.dart';
 
 class HistoryAllData extends StatefulWidget {
-  const HistoryAllData({super.key});
+  final String name;
+  const HistoryAllData({super.key, required this.name});
 
   @override
   State<HistoryAllData> createState() => _HistoryAllDataState();
@@ -18,71 +20,38 @@ class _HistoryAllDataState extends State<HistoryAllData> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: Text('History All Data In To Day'),
+        title: Text('History All Data In 7 Day Last'),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 410,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(
-                          'Techer',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          'Student',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                        Text(
-                          'Time',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            SizedBox(
+              height: 20,
             ),
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('history')
+                  .where('Teacher', isEqualTo: widget.name)
                   .snapshots(), // get data in sql
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final today = DateTime.now()
-                      .toLocal()
-                      .toIso8601String()
-                      .substring(0, 10); // find date today
+                  final now = DateTime.now().toLocal();
+                  final dayOfWeek = now.weekday;
+                  final startOfWeek =
+                      now.subtract(Duration(days: dayOfWeek - 1));
+                  final endOfWeek = now.add(Duration(days: 7 - dayOfWeek));
                   final filteredData = snapshot.data!.docs.where((doc) {
-                    // find data in sql
                     final timestamp =
                         doc['Time'] as Timestamp; // get data in sql
-                    final data = timestamp
-                        .toDate()
-                        .toLocal()
-                        .toIso8601String()
-                        .substring(0, 10);
-                    return data == today;
+                    final data = timestamp.toDate().toLocal();
+                    return data.isAfter(startOfWeek) &&
+                        data.isBefore(endOfWeek);
                   }).toList();
+                  filteredData.sort((a, b) {
+                    final aTime = (a['Time'] as Timestamp).toDate();
+                    final bTime = (b['Time'] as Timestamp).toDate();
+                    return bTime.compareTo(aTime);
+                  });
 
                   if (filteredData.isEmpty) {
                     return Center(
@@ -110,69 +79,118 @@ class _HistoryAllDataState extends State<HistoryAllData> {
                           final time = timestamp.toDate();
                           final formattedTime =
                               DateFormat('HH:mm').format(time);
-                          if (data['Status'] == 'aceept') {
-                            setcolors = Colors.green[800];
+                          if (data['Status'] == 'accept') {
+                            setcolors = Colors.green;
                           } else if (data['Status'] == 'reject') {
-                            setcolors = Colors.red[800];
+                            setcolors = Colors.red;
                           } else {
-                            setcolors = Colors.yellow[800];
+                            setcolors = Colors.yellow;
                           }
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 410,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: setcolors,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 110,
-                                          child: Expanded(
-                                            child: Text(
-                                              '${data['Techer']}',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.white,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    FirebaseFirestore.instance
+                                        .collection('history')
+                                        .where('Teacher',
+                                            isEqualTo: data['Teacher'])
+                                        .where('Student',
+                                            isEqualTo: data['Student'])
+                                        .get()
+                                        .then((value) {
+                                      value.docs.forEach((element) {
+                                        print(element['Teacher']);
+                                        print(element['Student']);
+                                        print(element['Recommand']);
+                                        print(element['Status']);
+                                        print(element['Time']);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                history_pafe_from_page(
+                                                    Tname: element['Teacher'],
+                                                    Sname: element['Student'],
+                                                    Recommand:
+                                                        element['Recommand'],
+                                                    SStaus: element['Status'],
+                                                    Tdate: formattedTime,
+                                                    Tday:
+                                                        DateFormat('dd/MM/yyyy')
+                                                            .format(time)),
+                                          ),
+                                        );
+                                      });
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 410,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: setcolors,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 100,
+                                            child: Expanded(
+                                              child: Text(
+                                                'T. ${data['Teacher']}',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 180,
-                                          child: Expanded(
-                                            child: Text(
-                                              '${data['Student']}',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.white,
+                                          SizedBox(
+                                            width: 90,
+                                            child: Expanded(
+                                              child: Text(
+                                                'S. ${data['Student']}',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 100,
-                                          child: Expanded(
-                                            child: Text(
-                                              '${formattedTime}',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.white,
+                                          SizedBox(
+                                            width: 100,
+                                            child: Expanded(
+                                              child: Text(
+                                                '${formattedTime}',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                          SizedBox(
+                                            width: 100,
+                                            child: Expanded(
+                                              child: Text(
+                                                '${DateFormat('dd/MM/yyyy').format(time)}',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

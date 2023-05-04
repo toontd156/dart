@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+\import 'package:flutter/material.dart';
 
 import 'welcome.dart';
 
@@ -7,6 +7,23 @@ List account = [
   {'username': 'Lara', 'password': 'a2b2'},
 ];
 
+// account[1]['username'];
+// account = [
+//   [1] = [
+//     username = james,
+//     password = a1b1
+//   ],
+//   [2] = [
+//     username = lara,
+//     password = a2b2
+//   ]
+// ]
+
+// var userJson = '{"name":"Intception","page": "Intception Hideout"}';
+
+//   Map<String, dynamic> userMap = jsonDecode(userJson);
+//   print(userMap["name"]);
+//   print(userMap["page"]);
 class login extends StatefulWidget {
   login({super.key});
 

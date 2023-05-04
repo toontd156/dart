@@ -1,24 +1,26 @@
 import 'dart:async';
 
+import 'package:ass1/StudentPage/main_search_page.dart';
 import 'package:ass1/service/Button_service.dart';
 import 'package:ass1/service/List_history_service.dart';
 import 'package:ass1/service/historyalldata_service.dart';
+import 'package:ass1/service/notification_student_page.dart';
 import 'package:ass1/service/threeline_service.dart';
 import 'package:ass1/service/notification_teacher_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
-class TecherPage extends StatefulWidget {
+class mainpage extends StatefulWidget {
   final String name;
   final String role;
-  const TecherPage({super.key, required this.name, required this.role});
+  const mainpage({super.key, required this.name, required this.role});
 
   @override
-  State<TecherPage> createState() => _TecherPageState();
+  State<mainpage> createState() => _mainpageState();
 }
 
-class _TecherPageState extends State<TecherPage> {
+class _mainpageState extends State<mainpage> {
   int _changeimg = 0;
   List<String> _imgUrl = [
     'https://media.discordapp.net/attachments/697404744460795936/1083642150098583552/334073368_2573360326145345_3407480155702441178_n.jpg?width=1254&height=1254',
@@ -111,18 +113,21 @@ class _TecherPageState extends State<TecherPage> {
                   imageurl:
                       'https://cdn.discordapp.com/attachments/697404744460795936/1082258543907962960/notification.png',
                   buttontext: 'PENDING APPROVE',
-                  namepage: Noti_Techer(
+                  namepage: Noti_Student(
                     name: widget.name,
                     role: widget.role,
                   ),
                 ),
                 MyButton(
+                    imageurl:
+                        'https://cdn.discordapp.com/attachments/697404744460795936/1098533554780127322/shield.png',
+                    buttontext: 'SEARCH',
+                    namepage: searchpage()),
+                MyButton(
                   imageurl:
                       'https://cdn.discordapp.com/attachments/697404744460795936/1082259632363417650/payment.png',
                   buttontext: 'HISTORY',
-                  namepage: HistoryAllData(
-                    name: widget.name,
-                  ),
+                  namepage: HistoryAllData(name: widget.name,),
                 ),
               ],
             ),
