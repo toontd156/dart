@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 class Noti_Techer extends StatefulWidget {
   final String name;
   final String role;
-  const Noti_Techer({Key? key, required this.name, required this.role})
+  final String email;
+  const Noti_Techer(
+      {Key? key, required this.name, required this.role, required this.email})
       : super(key: key);
 
   @override
@@ -26,7 +28,7 @@ class _Noti_TecherState extends State<Noti_Techer> {
         child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('req')
-                .where('Teacher', isEqualTo: widget.name)
+                .where('EmailT', isEqualTo: widget.email)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {

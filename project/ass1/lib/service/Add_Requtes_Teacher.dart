@@ -1,10 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:datepicker_dropdown/datepicker_dropdown.dart';
+import 'package:time_interval_picker/time_interval_picker.dart';
 
 class Add_Requtes_Teacher extends StatefulWidget {
   final String Fname;
   final String Lname;
-  const Add_Requtes_Teacher(
-      {super.key, required this.Fname, required this.Lname});
+  final String emailS;
+  final String emailT;
+  final String nameS;
+  const Add_Requtes_Teacher({
+    super.key,
+    required this.Fname,
+    required this.Lname,
+    required this.emailS,
+    required this.emailT,
+    required this.nameS,
+  });
 
   @override
   State<Add_Requtes_Teacher> createState() => _Add_Requtes_TeacherState();
@@ -15,11 +28,19 @@ class _Add_Requtes_TeacherState extends State<Add_Requtes_Teacher> {
   TextEditingController _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController _timeControllerTwo = TextEditingController();
+  var SelectDay;
+  var SelectMonth;
+  var SelectYear;
+  var SelectStartTime;
+  var SelectEndTime;
+  Timestamp? selectedStartTime; // เพิ่มตัวแปรในส่วนด้านบน
+  Timestamp? selectedEndTime; // เพิ่มตัวแปรในส่วนด้านบน
   @override
   Widget build(BuildContext context) {
     final hours = dateTime.hour.toString().padLeft(2);
     final minutes = dateTime.minute.toString().padLeft(2);
-
+    print(widget.emailS);
+    print(widget.emailT);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
@@ -31,7 +52,7 @@ class _Add_Requtes_TeacherState extends State<Add_Requtes_Teacher> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               width: 420,
-              height: 430,
+              height: 325,
               decoration: BoxDecoration(
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(10),
@@ -41,7 +62,7 @@ class _Add_Requtes_TeacherState extends State<Add_Requtes_Teacher> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      width: 380,
+                      width: 400,
                       height: 150,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -55,54 +76,43 @@ class _Add_Requtes_TeacherState extends State<Add_Requtes_Teacher> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          TextFormField(
-                            controller: _dateController,
-                            decoration: InputDecoration(
-                              icon:
-                                  Icon(Icons.calendar_today, color: Colors.red),
-                              labelText: 'Date',
-                              labelStyle: TextStyle(
-                                color: Colors.red,
+                          SizedBox(
+                            height: 20,
+                          ),
+                          DropdownDatePicker(
+                            inputDecoration: InputDecoration(
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 0.5),
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                                borderRadius: BorderRadius.circular(10),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                            ),
-                            onTap: () async {
-                              final ThemeData theme = Theme.of(context);
-                              final ColorScheme colorScheme = theme.colorScheme;
-                              DateTime? date = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2100),
-                                builder: (BuildContext context, Widget? child) {
-                                  return Theme(
-                                    data: ThemeData(
-                                      colorScheme: colorScheme.copyWith(
-                                        primary:
-                                            Colors.red, // เปลี่ยนสี primary
-                                        onPrimary: Colors
-                                            .black, // เปลี่ยนสีตัวอักษร primary
-                                        surface:
-                                            Colors.blue, // เปลี่ยนสีพื้นหลัง
-                                        onSurface: Colors
-                                            .black, // เปลี่ยนสีตัวอักษรพื้นหลัง
-                                      ),
-                                    ),
-                                    child: child!,
-                                  );
-                                },
-                              );
-                              if (date != null) {
-                                setState(() {
-                                  _dateController.text =
-                                      date.toString().substring(0, 10);
-                                });
-                              }
-                            },
-                          )
+                            ), // optional
+                            isDropdownHideUnderline: true, // optional
+                            isFormValidator: true, // optional
+                            startYear: 2023, // optional
+                            endYear: 2025, // optional
+                            width: 5, // optional
+                            // selectedDay: 14, // optional
+                            selectedMonth: 05, // optional
+                            selectedYear: 2023, // optional
+                            onChangedDay: (value) =>
+                                SelectDay = value.toString(),
+                            onChangedMonth: (value) =>
+                                SelectMonth = value.toString(),
+                            onChangedYear: (value) =>
+                                SelectYear = value.toString(),
+                            //boxDecoration: BoxDecoration(
+                            // border: Border.all(color: Colors.grey, width: 1.0)), // optional
+                            // showDay: false,// optional
+                            dayFlex: 2, // optional
+                            // locale: "zh_CN",// optional
+                            // hintDay: 'Day', // optional
+                            // hintMonth: 'Month', // optional
+                            // hintYear: 'Year', // optional
+                            // hintTextStyle: TextStyle(color: Colors.grey), // optional
+                          ),
                         ],
                       )),
                     ),
@@ -110,8 +120,8 @@ class _Add_Requtes_TeacherState extends State<Add_Requtes_Teacher> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      width: 380,
-                      height: 240,
+                      width: 400,
+                      height: 140,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -124,91 +134,52 @@ class _Add_Requtes_TeacherState extends State<Add_Requtes_Teacher> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          TextFormField(
-                            controller: _timeController,
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.access_time, color: Colors.red),
-                              labelText: 'Time',
-                              labelStyle: TextStyle(
-                                color: Colors.red,
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onTap: () async {
-                              final ThemeData theme = Theme.of(context);
-                              final ColorScheme colorScheme = theme.colorScheme;
-                              TimeOfDay? time = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now(),
-                                builder: (BuildContext context, Widget? child) {
-                                  return Theme(
-                                    data: ThemeData(
-                                      colorScheme: colorScheme.copyWith(
-                                        primary:
-                                            Colors.red, // เปลี่ยนสี primary
-                                        onPrimary: Colors
-                                            .white, // เปลี่ยนสีตัวอักษร primary
-                                        surface: Color.fromARGB(255, 33, 33,
-                                            33), // เปลี่ยนสีพื้นหลัง
-                                        onSurface: Colors
-                                            .white, // เปลี่ยนสีตัวอักษรพื้นหลัง
-                                      ),
-                                    ),
-                                    child: child!,
-                                  );
-                                },
-                              );
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TimeIntervalPicker(
+                            startLimit: null,
+                            endLimit: null,
+                            onChanged: (DateTime? startTime, DateTime? endTime,
+                                bool isAllDay) {
+                              if (startTime != null) {
+                                final selectedDate = DateTime(
+                                  int.tryParse(SelectYear ?? '') ?? 0,
+                                  int.tryParse(SelectMonth ?? '') ?? 0,
+                                  int.tryParse(SelectDay ?? '') ?? 0,
+                                );
+                                final newStartTime = DateTime(
+                                  selectedDate.year,
+                                  selectedDate.month,
+                                  selectedDate.day,
+                                  startTime.hour,
+                                  startTime.minute,
+                                );
+                                setState(() {
+                                  selectedStartTime =
+                                      Timestamp.fromDate(newStartTime);
+                                });
+                              }
+                              if (endTime != null) {
+                                final selectedDate = DateTime(
+                                  int.tryParse(SelectYear ?? '') ?? 0,
+                                  int.tryParse(SelectMonth ?? '') ?? 0,
+                                  int.tryParse(SelectDay ?? '') ?? 0,
+                                );
+                                final newEndTime = DateTime(
+                                  selectedDate.year,
+                                  selectedDate.month,
+                                  selectedDate.day,
+                                  endTime.hour,
+                                  endTime.minute,
+                                );
+                                setState(() {
+                                  selectedEndTime =
+                                      Timestamp.fromDate(newEndTime);
+                                });
+                              }
                             },
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text('To', style: TextStyle(fontSize: 20)),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                            controller: _timeControllerTwo,
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.access_time, color: Colors.red),
-                              labelText: 'Time',
-                              labelStyle: TextStyle(
-                                color: Colors.red,
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onTap: () async {
-                              final ThemeData theme = Theme.of(context);
-                              final ColorScheme colorScheme = theme.colorScheme;
-                              TimeOfDay? time = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now(),
-                                builder: (BuildContext context, Widget? child) {
-                                  return Theme(
-                                    data: ThemeData(
-                                      colorScheme: colorScheme.copyWith(
-                                        primary:
-                                            Colors.red, // เปลี่ยนสี primary
-                                        onPrimary: Colors
-                                            .white, // เปลี่ยนสีตัวอักษร primary
-                                        surface: Color.fromARGB(255, 33, 33,
-                                            33), // เปลี่ยนสีพื้นหลัง
-                                        onSurface: Colors
-                                            .white, // เปลี่ยนสีตัวอักษรพื้นหลัง
-                                      ),
-                                    ),
-                                    child: child!,
-                                  );
-                                },
-                              );
-                            },
-                          )
                         ],
                       )),
                     ),
@@ -221,7 +192,24 @@ class _Add_Requtes_TeacherState extends State<Add_Requtes_Teacher> {
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red),
               ),
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  FirebaseFirestore.instance
+                      .collection('req')
+                      .add({
+                        'Student': widget.nameS.toString(),
+                        'Teacher': widget.Fname.toString(),
+                        'Time': selectedStartTime,
+                        'EndTime': selectedEndTime,
+                        'Status': 'pending',
+                        'EmailS': widget.emailS.toString(),
+                        'EmailT': widget.emailT.toString(),
+                      }) // <-- Doc ID where data should be updated.
+                      .then((_) => print('Updated'))
+                      .catchError((error) => print('Update failed: $error'));
+                  Navigator.pop(context);
+                });
+              },
               child: Text('Add')),
         ]),
       ),

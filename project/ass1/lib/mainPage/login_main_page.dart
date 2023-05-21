@@ -1,3 +1,4 @@
+import 'package:ass1/adminPage/main_admin_page.dart';
 import 'package:ass1/mainPage/register_page.dart';
 import 'package:ass1/techerpage/main_techer_page.dart';
 import 'package:ass1/StudentPage/main_student_page.dart';
@@ -109,8 +110,10 @@ class _LoginPageState extends State<LoginPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => mainpage(
-                                    name: datauser.data()!['name'],
-                                    role: datauser.data()!['role'])),
+                                      name: datauser.data()!['name'],
+                                      role: datauser.data()!['role'],
+                                      email: username.text,
+                                    )),
                             (route) => false);
                       } else if (datauser.data()!['role'] == 'Teacher') {
                         Navigator.pushAndRemoveUntil(
@@ -119,6 +122,17 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (context) => TecherPage(
                                       name: datauser.data()!['name'],
                                       role: datauser.data()!['role'],
+                                      email: username.text,
+                                    )),
+                            (route) => false);
+                      } else if (datauser.data()!['role'] == 'admin') {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AdminPage(
+                                      name: datauser.data()!['name'],
+                                      role: datauser.data()!['role'],
+                                      email: username.text,
                                     )),
                             (route) => false);
                       }

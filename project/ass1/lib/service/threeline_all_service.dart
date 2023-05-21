@@ -38,6 +38,62 @@ class infoCardPerson extends StatelessWidget {
   }
 }
 
+class CardLogout extends StatelessWidget {
+  final String name;
+
+  const CardLogout({
+    super.key,
+    required this.name,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const CircleAvatar(
+        backgroundColor: Colors.white,
+        child: Icon(
+          CupertinoIcons.back,
+          color: Colors.red,
+        ),
+      ),
+      title: Text(
+        name,
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class CardBack extends StatelessWidget {
+  final String name;
+
+  const CardBack({
+    super.key,
+    required this.name,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const CircleAvatar(
+        backgroundColor: Colors.white,
+        child: Icon(
+          CupertinoIcons.backward_end,
+          color: Colors.red,
+        ),
+      ),
+      title: Text(
+        name,
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
 class SideMenu extends StatelessWidget {
   const SideMenu({
     super.key,
@@ -64,14 +120,6 @@ class SideMenu extends StatelessWidget {
         ),
         ListTile(
           onTap: () {},
-          leading: SizedBox(
-              width: 34,
-              height: 34,
-              child: RiveAnimation.asset(
-                menu.src,
-                artboard: menu.artboard,
-                onInit: riveonInit,
-              )),
           title: Text(
             menu.title,
             style: const TextStyle(

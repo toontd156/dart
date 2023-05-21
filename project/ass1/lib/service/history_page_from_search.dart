@@ -7,8 +7,17 @@ import 'package:intl/intl.dart';
 class HisTory_Page_From_Search extends StatefulWidget {
   final String Fname;
   final String Lname;
-  const HisTory_Page_From_Search(
-      {super.key, required this.Fname, required this.Lname});
+  final String emailS;
+  final String emailT;
+  final String nameS;
+  const HisTory_Page_From_Search({
+    super.key,
+    required this.Fname,
+    required this.Lname,
+    required this.emailS,
+    required this.emailT,
+    required this.nameS,
+  });
 
   @override
   State<HisTory_Page_From_Search> createState() =>
@@ -46,8 +55,7 @@ class _HisTory_Page_From_SearchState extends State<HisTory_Page_From_Search> {
                         StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection('history')
-                              .where('Teacher', isEqualTo: widget.Fname)
-                              .where('Tlastname', isEqualTo: widget.Lname)
+                              .where('EmailT', isEqualTo: widget.emailT)
                               .snapshots(), // get data in sql
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
@@ -199,6 +207,9 @@ class _HisTory_Page_From_SearchState extends State<HisTory_Page_From_Search> {
                         builder: (context) => Add_Requtes_Teacher(
                               Fname: widget.Fname,
                               Lname: widget.Lname,
+                              emailS: widget.emailS,
+                              emailT: widget.emailT,
+                              nameS: widget.nameS,
                             )));
               },
               child: Text('ADD REQUTES'),

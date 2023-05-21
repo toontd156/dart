@@ -8,8 +8,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class searchpage extends StatefulWidget {
+  final String name;
+  final String email;
   const searchpage({
     super.key,
+    required this.name,
+    required this.email,
   });
 
   @override
@@ -101,6 +105,9 @@ class _searchpageState extends State<searchpage> {
                                               Fname: data['name'].toUpperCase(),
                                               Lname: data['lastname']
                                                   .toUpperCase(),
+                                              emailS: widget.email,
+                                              emailT: data['email'],
+                                              nameS: widget.name,
                                             )),
                                   );
                                 },

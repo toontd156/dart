@@ -7,7 +7,10 @@ import 'package:intl/intl.dart';
 
 class HistoryAllData extends StatefulWidget {
   final String name;
-  const HistoryAllData({super.key, required this.name});
+  final String email;
+  final String role;
+  const HistoryAllData(
+      {super.key, required this.name, required this.email, required this.role});
 
   @override
   State<HistoryAllData> createState() => _HistoryAllDataState();
@@ -31,7 +34,7 @@ class _HistoryAllDataState extends State<HistoryAllData> {
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('history')
-                  .where('Teacher', isEqualTo: widget.name)
+                  .where('EmailT', isEqualTo: widget.email)
                   .snapshots(), // get data in sql
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
@@ -95,10 +98,10 @@ class _HistoryAllDataState extends State<HistoryAllData> {
                                   onTap: () {
                                     FirebaseFirestore.instance
                                         .collection('history')
-                                        .where('Teacher',
-                                            isEqualTo: data['Teacher'])
-                                        .where('Student',
-                                            isEqualTo: data['Student'])
+                                        .where('EmailT',
+                                            isEqualTo: data['EmailT'])
+                                        .where('EmailS',
+                                            isEqualTo: data['EmailS'])
                                         .get()
                                         .then((value) {
                                       value.docs.forEach((element) {
