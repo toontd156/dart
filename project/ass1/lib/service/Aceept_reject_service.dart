@@ -159,17 +159,14 @@ class _Ap_RJState extends State<Ap_RJ> {
                             'Status': 'accept',
                             'Recommand': recommand.text
                           });
-                          FirebaseFirestore.instance
-                              .collection('history')
-                              .doc(widget.idsql)
-                              .set({
+
+                          FirebaseFirestore.instance.collection('history').add({
                             'Student': widget.namestudent,
                             'Teacher': widget.nametecher,
                             'Status': 'accept',
                             'Recommand': recommand.text,
                             'Time': DateTime.now()
-                          });
-
+                          }).then((value) => {print('success')});
                           Navigator.pop(context);
                         } else if (_isCheckedReject == true &&
                             _isCheckedAccept == false) {
@@ -183,16 +180,23 @@ class _Ap_RJState extends State<Ap_RJ> {
                             'Status': 'reject',
                             'Recommand': recommand.text
                           });
-                          FirebaseFirestore.instance
-                              .collection('history')
-                              .doc(widget.idsql)
-                              .set({
+                          // FirebaseFirestore.instance
+                          //     .collection('history')
+                          //     .doc(widget.idsql)
+                          //     .set({
+                          //   'Student': widget.namestudent,
+                          //   'Teacher': widget.nametecher,
+                          //   'Status': 'reject',
+                          //   'Recommand': recommand.text,
+                          //   'Time': DateTime.now()
+                          // });
+                          FirebaseFirestore.instance.collection('history').add({
                             'Student': widget.namestudent,
                             'Teacher': widget.nametecher,
                             'Status': 'reject',
                             'Recommand': recommand.text,
                             'Time': DateTime.now()
-                          });
+                          }).then((value) => {print('reject')});
                           Navigator.pop(context);
                         } else {
                           return;

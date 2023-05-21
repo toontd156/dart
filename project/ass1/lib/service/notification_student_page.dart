@@ -72,14 +72,10 @@ class _Noti_StudentState extends State<Noti_Student> {
                                     style: TextStyle(
                                         fontSize: 20, color: Colors.white),
                                   ),
-                                  SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: req['Status'] == 'pending'
-                                        ? CircularProgressIndicator(
-                                            color: Colors.white,
-                                          )
-                                        : Container(),
+                                  Text(
+                                    '${formattedDate}',
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white),
                                   ),
                                 ],
                               ),
